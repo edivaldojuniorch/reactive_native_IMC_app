@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-
+                                
 const styles = StyleSheet.create({
     formContext: {
         width: "100%",
@@ -57,6 +57,11 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         marginTop: 0,
 
+    },
+    boxResultOver:{
+        width:"100%",
+        height:"50"
+        
     }
 });
 
