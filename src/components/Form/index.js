@@ -1,5 +1,5 @@
 import { React, useState } from "react"
-import { View, Text, TextInput, TouchableOpacity, Vibration, Pressable, Keyboard } from "react-native"
+import { View, Text, TextInput, TouchableOpacity, Vibration, Pressable, Keyboard, FlatList } from "react-native"
 import ResultImc from "./ResultIMC";
 import styles from "./style"
 
@@ -11,9 +11,13 @@ export default function Form() {
     const [imc, setImc] = useState(null)
     const [textButton, setTextButton] = useState("Calcular")
     const [errorMensage, setErrorMensage] = useState(null)
+    const [imcList, setImcList] = useState([])
 
     function imcCalculator() {
-        return setImc((weight / (height * height)).toFixed(2))
+        let heightFormat = height.replace(",", ".")
+        let totalImc = (weight / (heightFormat * heightFormat)).toFixed(2)
+        setImcList((arr) => [...arr, { id: new Date().getTime(), imc: totalImc }])
+        setImc(totalImc)
     }
 
     function fieldVerification() {
@@ -24,8 +28,10 @@ export default function Form() {
     }
 
     function validationImc() {
-        // console.log("weight:", weight)
-        // console.log("height:", height)
+        console.log("weight:", weight)
+        console.log("height:", height)
+        console.log(imcList)
+
         if (weight != null && height != null) {
             setTextButton("Calcular")
             imcCalculator()
@@ -42,9 +48,9 @@ export default function Form() {
             setHeight(null)
             setWeight(null)
             setImc(null)
-
         }
     }
+
     return (
         <View style={styles.formContext}>
             {imc == null ?
@@ -71,7 +77,7 @@ export default function Form() {
                         style={styles.buttonCalculator}
                         onPress={() => validationImc()}
                     >
-                        <Text>Share</Text>
+                        <Text style={styles.textbuttonCalculator}>{textButton}</Text>
                     </TouchableOpacity>
                 </Pressable>
                 :
@@ -86,6 +92,23 @@ export default function Form() {
                 </View>
 
             }
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                style={styles.listImc}
+                data={imcList}
+                renderItem={({ item }) => {
+                    return (
+                        <Text style={styles.listImcItem}>
+                            <Text style={styles.listImcItemText}>Resultado do IMC: </Text>
+                            {item.imc}
+                        </Text>
+                    )
+                }}
+                keyExtractor={(item) => {
+                    item.id
+                }}
+            >
+            </FlatList>
         </View >
     );
 }
